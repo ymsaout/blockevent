@@ -29,3 +29,77 @@ a {
   background-color: #707070;
 }
 
+/* NFT LIST */
+
+/* General container for the assets list */
+.assets-list {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Styling for each asset/event card */
+.asset-card {
+  background-color: #2C2F33;
+  border-radius: 10px;
+  padding: 20px;
+  width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #FFFFFF;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Styling for the asset/event details */
+.asset-card .asset-id, 
+.asset-card .asset-name, 
+.asset-card .asset-owner, 
+.asset-card .asset-price {
+  margin: 10px 0;
+}
+
+/* Styling for the buy button */
+.asset-card .buy-button {
+  background-color: #7289DA;
+  border: none;
+  color: #FFFFFF;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.asset-card .buy-button:hover {
+  background-color: #5b6eae;
+}
+
+/* Center the image */
+.asset-card img {
+  max-width: 100%;
+  height: auto;
+  margin: auto;
+  display: block;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 600px) {
+  .assets-list {
+      flex-direction: column;
+  }
+
+  .asset-card {
+      width: 100%;
+  }
+}
+
