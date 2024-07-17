@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Metaplex, PublicKey, keypairIdentity, walletAdapterIdentity } from "@metaplex-foundation/js";
 import { publicKey } from '@metaplex-foundation/umi';
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
-import { dasApi } from '@metaplex-foundation/digital-asset-standard-api';
+import { DasApiAssetList, dasApi, DasApiAsset } from '@metaplex-foundation/digital-asset-standard-api';
 
 // Wallet
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
@@ -21,7 +21,7 @@ export const MyNFTsView: FC = ({ }) => {
   const [isNavOpen, setIsNavOpen] = useState(false);
 
   const [metaplex, setMetaplex] = useState(null);
-  const [myNfts, setMyNfts] = useState([]);
+  const [myNfts, setMyNfts] = useState<DasApiAsset[]>(null);
 
   useEffect(() => {
     if (wallet.adapter) {
@@ -34,36 +34,16 @@ export const MyNFTsView: FC = ({ }) => {
     const fetchCandyMachine = async () => {
       if (!metaplex) return;
       try {
-        const candyMachine = await metaplex.candyMachines().findByAddress({ address: new PublicKey(CANDY_MACHINE_ID) });
-        console.log('IN MY NFTS - candyMachine  c => ' ,candyMachine)
-        // const candyMachinPublicKey = await candyMachine.address
-        // const test = new PublicKey(candyMachinPublicKey)
-        // console.log('IN MY NFTS - candyMachine - candyMachinPublicKey  => ' , test)
-        // const b = await metaplex.nfts().findAllByOwner("")
-        const tokenAccountPublicKey = new PublicKey(TOKEN_ACCOUNT)
-        // getTokenAccountBalance
-
-        // const val = await connection.getTokenAccountBalance(tokenAccountPublicKey)
-        // const val2 = await connection.getTokenAccountsByOwner(wallet.adapter.publicKey, { mint: tokenAccountPublicKey })
-        // console.log('IN MY NFTS - val => ' , val)
-        // console.log('IN MY NFTS - val2 => ' , val2)
-        // console.log('IN MY NFTS - metaplex => ' , metaplex.nfts().getBalance())
-
         const umi = createUmi('https://api.devnet.solana.com').use(dasApi());
         const owner = publicKey(wallet.adapter.publicKey);
 
-        const assets = await umi.rpc.getAssetsByOwner({
-            owner,
-            limit: 10
+        const assets: DasApiAssetList = await umi.rpc.getAssetsByOwner({
+          owner,
+          limit: 10
         });
 
-        console.log(assets.items.length > 0);
+        setMyNfts(assets.items)
         console.log(assets.items);
-
-
-        // setRemaining(candyMachine.itemsRemaining.toNumber());
-        // const priceInBasisPoints = candyMachine.candyGuard.guards.solPayment.amount.basisPoints.toNumber();
-        // setPrice(priceInBasisPoints/1000000000)
       } catch (error) {
         console.error("Failed to fetch candy machine", error);
       }
@@ -71,6 +51,10 @@ export const MyNFTsView: FC = ({ }) => {
 
     fetchCandyMachine();
   }, [metaplex]);
+
+  const truncate = (str, n) => {
+    return str.length > n ? str.substring(0, n - 1) + '...' : str;
+  };
 
   return (
     <div className="md:hero mx-auto p-4">
@@ -81,17 +65,30 @@ export const MyNFTsView: FC = ({ }) => {
           </h1>
         </div>
 
-        { myNfts.length === 0 && 
-        <div>
-          <h2 className="text-center text-4xl md:pl-12 font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-fuchsia-500 mb-4">
-            You don't have NFTs on your wallet ! 
-          </h2>
-          <NavElement
-            label="Mint NFTS"
-            href="/"
-            navigationStarts={() => setIsNavOpen(false)}
+        {myNfts ?
+          <div className="assets-list">
+            {myNfts && myNfts.map((nft) => (
+              <div key={nft.id} className="asset-card">
+                <div className="asset-name">NAME : {nft.content.metadata.name}</div>
+                {/* URI : {nft.content.json_uri} */}
+                {/* <image src="nft.content.json_uri"></image> */}
+                <img src={nft.content.json_uri} width={"100px"} alt="Logo" />
+                <div className="asset-id">ID : {truncate(nft.id, 20)}</div>
+                {/* <button className="buy-button">BUY</button> */}
+              </div>
+            ))}
+          </div>
+          :
+          <div>
+            <h2 className="text-center text-4xl md:pl-12 font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-fuchsia-500 mb-4">
+              You don't have NFTs on your wallet !
+            </h2>
+            <NavElement
+              label="Mint NFTS"
+              href="/"
+              navigationStarts={() => setIsNavOpen(false)}
             />
-        </div>
+          </div>
         }
       </div>
     </div>
