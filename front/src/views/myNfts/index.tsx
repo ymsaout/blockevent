@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 // Next, React
 import { FC, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -34,7 +35,7 @@ export const MyNFTsView: FC = ({ }) => {
 
   useEffect(() => {
     const fetchCandyMachine = async () => {
-      if (!metaplex) return;
+      if (!metaplex || !wallet || !wallet.adapter || !wallet.adapter.publicKey) return;
       try {
         const umi = createUmi('https://api.devnet.solana.com').use(dasApi());
         const owner = publicKey(wallet.adapter.publicKey);
@@ -54,10 +55,12 @@ export const MyNFTsView: FC = ({ }) => {
     };
 
     fetchCandyMachine();
-  }, [metaplex]);
+  }, [metaplex,connection]);
 
   const truncate = (str, n) => {
-    return str.length > n ? str.substring(0, n - 1) + '...' : str;
+    if (str.length <= n) return str;
+    const partLength = Math.floor((n - 3) / 2); // -3 pour les "..."
+    return str.substring(0, partLength) + '...' + str.substring(str.length - partLength);
   };
 
   const scrollLeft = () => {
@@ -73,37 +76,45 @@ export const MyNFTsView: FC = ({ }) => {
     <div className="md:hero mx-auto p-4">
       <div className="md:hero-content flex flex-col">
         <div className='mt-6'>
-          <h1 className="text-center text-5xl md:pl-12 font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-fuchsia-500 mb-4">
-            My NFTS
+          <h1 className="text-center text-5xl md:pl-12 font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-fuchsia-500 mb-2">
+            Mes places de concert
           </h1>
         </div>
-        {myNfts ?
-          <div className="relative w-full overflow-hidden">
-            <button onClick={scrollLeft} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">{"<"}</button>
-            <div ref={carouselRef} className="flex overflow-x-scroll space-x-4 p-4">
-              {myNfts.map((nft) => (
-                <div key={nft.id} className="asset-card flex-shrink-0 w-1/4">
-                  <div className="asset-name">NAME : {nft.content.metadata.name}</div>
-                  <img src={nft.content.json_uri} width={"100px"} alt="Logo" />
-                  <div className="asset-id">ID : {truncate(nft.id, 20)}</div>
-                </div>
-              ))}
-            </div>
-            <button onClick={scrollRight} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">{">"}</button>
+        {!wallet || !wallet.adapter ?
+          <div>
+            <h2 className="text-center text-3xl md:pl-12 font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-fuchsia-500 mb-10">
+              Votre wallet n'est pas connecté 
+            </h2>
+            <p className="text-center md:pl-12 text-white-800 text-xl">Regarde en haut à droite 😉 </p>
           </div>
           :
-          <div>
-            <h2 className="text-center text-4xl md:pl-12 font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-fuchsia-500 mb-4">
-              You don't have NFTs on your wallet !
-            </h2>
-            <NavElement
-              label="Mint NFTS"
-              href="/"
-              navigationStarts={() => setIsNavOpen(false)}
-            />
-          </div>
-        }
+          myNfts ?
+            <div className="relative w-full overflow-hidden">
+              <button onClick={scrollLeft} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">{"<"}</button>
+              <div ref={carouselRef} className="flex overflow-x-scroll space-x-4 p-4">
+                {myNfts.map((nft) => (
+                  <div key={nft.id} className="asset-card flex-shrink-0 w-1/4" style={{ backgroundColor: '#1a202c' }}>
+                    <div className="asset-name">NOM : {nft.content.metadata.name}</div>
+                    <img src={nft.content.json_uri} width={"100px"} alt="Logo" />
+                    <div className="asset-id">ID : {truncate(nft.id, 20)}</div>
+                  </div>
+                ))}
+              </div>
+              <button onClick={scrollRight} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">{">"}</button>
+            </div>
+            :
+            <div>
+              <h2 className="text-center text-4xl md:pl-12 font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-fuchsia-500 mb-10">
+                Tu ne possèdes aucune place pour le moment !
+              </h2>
+              <NavElement
+                label="Regarde les concerts 😉"
+                href="/"
+                navigationStarts={() => setIsNavOpen(false)}
+              />
+            </div>
+          }
+        </div>
       </div>
-    </div>
   );
 };

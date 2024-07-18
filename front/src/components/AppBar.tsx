@@ -94,22 +94,22 @@ export const AppBar: React.FC = () => {
         <div className="navbar-end">
           <div className="hidden md:inline-flex align-items-center justify-items gap-6">
           <NavElement
-            label="Home"
+            label="Concerts"
             href="/"
             navigationStarts={() => setIsNavOpen(false)}
           />
           <NavElement
-            label="Basics"
-            href="/basics"
-            navigationStarts={() => setIsNavOpen(false)}
-          />
-          <NavElement
-            label="My NFTs"
+            label="Mes places"
             href="/myNfts"
             navigationStarts={() => setIsNavOpen(false)}
           />
+          <NavElement
+            label="Les basiques"
+            href="/basics"
+            navigationStarts={() => setIsNavOpen(false)}
+          />
           <WalletMultiButtonDynamic className="btn-ghost btn-sm rounded-btn text-lg mr-1 " />
-          <div className="btn-ghost btn-sm rounded-btn text-lg mr-6 " >{solanaBalance !== null ? `${solanaBalance.toFixed(2)} SOL` : 'Balance not available'}</div>
+          <div className="btn-ghost btn-sm rounded-btn text-lg mr-6 " >{solanaBalance !== null ? `${solanaBalance.toFixed(2)} SOL` : ''}</div>
         </div>
           <label
               htmlFor="my-drawer"

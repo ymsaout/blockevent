@@ -37,7 +37,7 @@ export const SignMessage: FC = () => {
                     onClick={onClick} disabled={!publicKey}
                 >
                     <div className="hidden group-disabled:block">
-                        Wallet not connected
+                        Wallet déconnecté 
                     </div>
                     <span className="block group-disabled:hidden" > 
                         Signer un Message

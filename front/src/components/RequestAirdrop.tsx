@@ -43,10 +43,12 @@ export const RequestAirdrop: FC = () => {
             
                         <button
                             className="group w-60 m-2 btn animate-pulse bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:from-white hover:to-purple-300 text-black"
-                            onClick={onClick}
+                            onClick={onClick}  disabled={!publicKey}
                             >
-                                <span> Recevoir 1 SOL (DEVNET) </span>
-                
+                            <div className="hidden group-disabled:block ">
+                                Wallet déconnecté 
+                            </div>
+                            <span className="block group-disabled:hidden" > Recevoir 1 SOL (DEVNET) </span>
                         </button>
                 </div>
         </div>
