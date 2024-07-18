@@ -78,7 +78,7 @@ export const SendTransaction: FC = () => {
                         Wallet not connected
                         </div>
                          <span className="block group-disabled:hidden" >
-                            Make a donation of {donationAmount} SOL
+                            FAIRE UN DON DE {donationAmount} SOL
                         </span>
                     </button>
              </div>

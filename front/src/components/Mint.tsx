@@ -1,9 +1,10 @@
+/* eslint-disable react/no-unescaped-entities */
 import React, { useEffect, useState } from 'react';
 import { Connection, PublicKey, Keypair } from "@solana/web3.js";
 import { Metaplex, keypairIdentity, sol, walletAdapterIdentity } from "@metaplex-foundation/js";
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { notify } from 'utils/notifications';
-
+import Image from 'next/image';
 const CANDY_MACHINE_ID = 'GFL2Q47XzJxZedjm6Dskdhviw82c73AxPh8epcbgaZtz';
 const AUTHORITY = "CCaZAXustnWzSegL8x3EwPQ6m39GLXo6HggB8TmTdzps";  
 
@@ -67,21 +68,48 @@ const MintButton = () => {
   };
 
   return (
-    <div className="bg-gray-900 text-white p-6 rounded-lg text-center w-80 mx-auto">
-      <div className="flex justify-between items-center mb-4">
-        <div className="text-lg mb-2">Remaining: {remaining}</div>
-        <div className="text-lg mb-2">Price: {price} SOL</div>
+    <div className="bg-gray-900 text-white p-6 rounded-lg mx-auto max-w-4xl">
+      <Image
+      src="/VC_2017_description.png"
+      alt="solana icon"
+      width={3500}
+      height={1800}
+      />        
+      <div className="flex flex-col md:flex-row items-start">
+        <div className="md:w-1/2 p-4">
+          <h1 className="text-3xl font-bold mb-10">Les Vieilles Charrues 🎸 </h1>
+          <p className="text-sm text-gray-400 mb-4">
+            Le festival des Vieilles Charrues est l'un des plus grands festivals de musique en France, se déroulant chaque année à Carhaix, en Bretagne. Fondé en 1992, il attire des centaines de milliers de festivaliers venus de toute l'Europe pour profiter d'une programmation éclectique et de renommée internationale. 🎶🌍
+          </p>
+          <p className="text-sm text-gray-400 mb-4">
+            Ce festival emblématique propose une variété de genres musicaux, allant du rock à la pop, en passant par l'électro, le hip-hop et la musique traditionnelle bretonne. Les Vieilles Charrues ont accueilli des artistes légendaires tels que Bruce Springsteen, Muse, David Bowie, et bien d'autres. 🎤
+          </p>
+          <p className="text-sm text-gray-400 mb-4">
+            En plus des concerts, le festival offre une expérience unique avec des animations, des expositions d'art, des stands de nourriture locale et des espaces de détente. C'est un lieu de rencontre et de partage où règne une ambiance conviviale et festive. 🧘
+          </p>
+          <p className="text-sm text-gray-400 mb-4">
+            Les Vieilles Charrues sont également engagées dans des initiatives écologiques et solidaires, mettant en avant le respect de l'environnement et le soutien aux associations locales. Chaque année, le festival continue de se réinventer tout en conservant son esprit authentique et chaleureux. 🌱
+          </p>
+        </div>
+        <div className="md:w-1/2 p-4 flex justify-center items-center">
+          <div className="bg-gray-800 rounded-lg shadow-lg p-6">
+            <p className="text-sm text-gray-400 mb-4">Achète ton ticket pour le festival !</p>
+            <div className="text-lg mb-2">Places restantes : {remaining}</div>
+            <div className="text-lg mb-2">Prix: {price} SOL</div>
+            <button
+              className="group w-60 m-2 btn bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:from-white hover:to-purple-300 text-black"              onClick={handleMint}
+              disabled={minting || !isWalletConnected}
+            >
+              {minting ? 'Minting...' : 'Acheter un billet'}
+            </button>
+            <div className="mt-4 text-sm text-gray-400">Powered by METAPLEX</div>
+          </div>
+        </div>
       </div>
-      <button 
-        className={`bg-purple-600 text-white px-6 py-3 rounded text-lg ${minting || !isWalletConnected ? 'opacity-50 cursor-not-allowed' : 'hover:bg-purple-700'}`} 
-        onClick={handleMint} 
-        disabled={minting || !isWalletConnected}
-      >
-        {minting ? 'Minting...' : 'MINT'}
-      </button>
-      <div className="mt-4 text-sm text-gray-400">Powered by METAPLEX</div>
     </div>
   );
 };
 
 export default MintButton;
+
+

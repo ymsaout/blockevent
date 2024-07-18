@@ -40,7 +40,7 @@ export const SignMessage: FC = () => {
                         Wallet not connected
                     </div>
                     <span className="block group-disabled:hidden" > 
-                        Sign Message 
+                        Signer un Message
                     </span>
                 </button>
             </div>
