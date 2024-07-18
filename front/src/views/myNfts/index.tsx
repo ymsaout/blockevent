@@ -1,5 +1,5 @@
 // Next, React
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Metaplex, PublicKey, keypairIdentity, walletAdapterIdentity } from "@metaplex-foundation/js";
 import { publicKey } from '@metaplex-foundation/umi';
@@ -22,9 +22,11 @@ export const MyNFTsView: FC = ({ }) => {
 
   const [metaplex, setMetaplex] = useState(null);
   const [myNfts, setMyNfts] = useState<DasApiAsset[]>(null);
+  const carouselRef = useRef(null);
+
 
   useEffect(() => {
-    if (wallet.adapter) {
+    if (wallet && wallet.adapter) {
       const metaplexInstance = Metaplex.make(connection).use(walletAdapterIdentity(wallet.adapter));
       setMetaplex(metaplexInstance);
     }
@@ -41,9 +43,11 @@ export const MyNFTsView: FC = ({ }) => {
           owner,
           limit: 10
         });
-
-        setMyNfts(assets.items)
-        console.log(assets.items);
+        
+        const filteredAssets = assets.items.filter(asset => asset.content.metadata.symbol === 'VC');
+        
+        setMyNfts(filteredAssets)
+        console.log(filteredAssets)
       } catch (error) {
         console.error("Failed to fetch candy machine", error);
       }
@@ -56,6 +60,15 @@ export const MyNFTsView: FC = ({ }) => {
     return str.length > n ? str.substring(0, n - 1) + '...' : str;
   };
 
+  const scrollLeft = () => {
+    carouselRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+  };
+
+  const scrollRight = () => {
+    carouselRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+  };
+
+
   return (
     <div className="md:hero mx-auto p-4">
       <div className="md:hero-content flex flex-col">
@@ -64,19 +77,19 @@ export const MyNFTsView: FC = ({ }) => {
             My NFTS
           </h1>
         </div>
-
         {myNfts ?
-          <div className="assets-list">
-            {myNfts && myNfts.map((nft) => (
-              <div key={nft.id} className="asset-card">
-                <div className="asset-name">NAME : {nft.content.metadata.name}</div>
-                {/* URI : {nft.content.json_uri} */}
-                {/* <image src="nft.content.json_uri"></image> */}
-                <img src={nft.content.json_uri} width={"100px"} alt="Logo" />
-                <div className="asset-id">ID : {truncate(nft.id, 20)}</div>
-                {/* <button className="buy-button">BUY</button> */}
-              </div>
-            ))}
+          <div className="relative w-full overflow-hidden">
+            <button onClick={scrollLeft} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">{"<"}</button>
+            <div ref={carouselRef} className="flex overflow-x-scroll space-x-4 p-4">
+              {myNfts.map((nft) => (
+                <div key={nft.id} className="asset-card flex-shrink-0 w-1/4">
+                  <div className="asset-name">NAME : {nft.content.metadata.name}</div>
+                  <img src={nft.content.json_uri} width={"100px"} alt="Logo" />
+                  <div className="asset-id">ID : {truncate(nft.id, 20)}</div>
+                </div>
+              ))}
+            </div>
+            <button onClick={scrollRight} className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">{">"}</button>
           </div>
           :
           <div>
