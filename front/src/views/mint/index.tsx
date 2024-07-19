@@ -77,7 +77,7 @@ export const MintView: FC = ({ }) => {
       />        
       <div className="flex flex-col md:flex-row items-start">
         <div className="md:w-1/2 p-4">
-          <h1 className="text-3xl font-bold mb-10">Les Vieilles Charrues 🎸 </h1>
+          <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-fuchsia-500 mb-4 animate-fade-in">Les Vieilles Charrues </h1>
           <p className="text-sm text-gray-400 mb-4">
             Le festival des Vieilles Charrues est l'un des plus grands festivals de musique en France, se déroulant chaque année à Carhaix, en Bretagne. Fondé en 1992, il attire des centaines de milliers de festivaliers venus de toute l'Europe pour profiter d'une programmation éclectique et de renommée internationale. 🎶🌍
           </p>
