@@ -1,7 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { HomeView } from "../views";
-import Mint from "../components/Mint"
 import { useState } from "react";
 
 const Home: NextPage = (props) => {
@@ -18,7 +17,7 @@ const Home: NextPage = (props) => {
           content="Solana Scaffold"
         />
       </Head>
-      <Mint/>
+      <HomeView/>
     </div>
   );
 };

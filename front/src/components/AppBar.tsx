@@ -94,17 +94,22 @@ export const AppBar: React.FC = () => {
         <div className="navbar-end">
           <div className="hidden md:inline-flex align-items-center justify-items gap-6">
           <NavElement
-            label="Concerts"
+            label="Accueil"
             href="/"
             navigationStarts={() => setIsNavOpen(false)}
           />
           <NavElement
-            label="Mes places"
+            label="Concerts"
+            href="/mint"
+            navigationStarts={() => setIsNavOpen(false)}
+          />
+          <NavElement
+            label="Places"
             href="/myNfts"
             navigationStarts={() => setIsNavOpen(false)}
           />
           <NavElement
-            label="Les basiques"
+            label="Basiques"
             href="/basics"
             navigationStarts={() => setIsNavOpen(false)}
           />

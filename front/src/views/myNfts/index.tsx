@@ -13,8 +13,8 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 // Store
 import NavElement from 'components/nav-element';
 
-const CANDY_MACHINE_ID = 'GFL2Q47XzJxZedjm6Dskdhviw82c73AxPh8epcbgaZtz';
-const TOKEN_ACCOUNT = '8ixLuvikkC8skxPVDbuYXoz63dFFY8wEqFDyPTnXEY6f';
+const CANDY_MACHINE_ID = 'BuovNpB1feL7us6sTWgStksd5s723UdLYamevHAvVAQD';
+const COLLECTION_NFT_MINT = '27MwEt1T5M5sSpBErBor4SQKGpfABYeg7HwwL6rDwWRz';
 
 export const MyNFTsView: FC = ({ }) => {
   const { wallet } = useWallet();
@@ -45,7 +45,7 @@ export const MyNFTsView: FC = ({ }) => {
           limit: 10
         });
         
-        const filteredAssets = assets.items.filter(asset => asset.content.metadata.symbol === 'VC');
+        const filteredAssets = assets.items.filter(asset => asset.grouping[0].group_value === COLLECTION_NFT_MINT);
         
         setMyNfts(filteredAssets)
         console.log(filteredAssets)
@@ -88,7 +88,7 @@ export const MyNFTsView: FC = ({ }) => {
             <p className="text-center md:pl-12 text-white-800 text-xl">Regarde en haut à droite 😉 </p>
           </div>
           :
-          myNfts ?
+          myNfts && myNfts.length  ?
             <div className="relative w-full overflow-hidden">
               <button onClick={scrollLeft} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">{"<"}</button>
               <div ref={carouselRef} className="flex overflow-x-scroll space-x-4 p-4">
@@ -109,7 +109,7 @@ export const MyNFTsView: FC = ({ }) => {
               </h2>
               <NavElement
                 label="Regarde les concerts 😉"
-                href="/"
+                href="/mint"
                 navigationStarts={() => setIsNavOpen(false)}
               />
             </div>
