@@ -88,7 +88,7 @@ export const MyNFTsView: FC = ({ }) => {
             <p className="text-center md:pl-12 text-white-800 text-xl">Regarde en haut à droite 😉 </p>
           </div>
           :
-          myNfts ?
+          myNfts && myNfts.length  ?
             <div className="relative w-full overflow-hidden">
               <button onClick={scrollLeft} className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full">{"<"}</button>
               <div ref={carouselRef} className="flex overflow-x-scroll space-x-4 p-4">
@@ -109,7 +109,7 @@ export const MyNFTsView: FC = ({ }) => {
               </h2>
               <NavElement
                 label="Regarde les concerts 😉"
-                href="/"
+                href="/mint"
                 navigationStarts={() => setIsNavOpen(false)}
               />
             </div>
