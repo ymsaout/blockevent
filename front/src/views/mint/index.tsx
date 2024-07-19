@@ -5,7 +5,7 @@ import { Metaplex, keypairIdentity, sol, walletAdapterIdentity } from "@metaplex
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { notify } from 'utils/notifications';
 import Image from 'next/image';
-const CANDY_MACHINE_ID = 'GFL2Q47XzJxZedjm6Dskdhviw82c73AxPh8epcbgaZtz';
+const CANDY_MACHINE_ID = 'BuovNpB1feL7us6sTWgStksd5s723UdLYamevHAvVAQD';
 const AUTHORITY = "CCaZAXustnWzSegL8x3EwPQ6m39GLXo6HggB8TmTdzps";  
 
 export const MintView: FC = ({ }) => {

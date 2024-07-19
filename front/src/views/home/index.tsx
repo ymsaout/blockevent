@@ -23,7 +23,7 @@ export const HomeView: FC = ({ }) => {
       <div className="md:hero-content flex flex-col items-center text-center">
         <div className='mt-6'>
           <h1 className="text-5xl md:pl-12 font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-fuchsia-500 mb-4 animate-fade-in">
-            BlockEvent: Vos Billets à petit prix
+            BlockEvent : Vos Billets à petit prix
           </h1>
         </div>
         <h4 className="md:w-full text-2xl md:text-4xl text-slate-300 my-2 animate-slide-in">
