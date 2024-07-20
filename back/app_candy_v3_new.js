@@ -8,12 +8,14 @@ const SOLANA_CONNECTION = new Connection(REACT_APP_RPC_URL, { commitment: 'final
 
 const secret = JSON.parse(await readFile(new URL('./my-wallet.json', import.meta.url)));
 const WALLET = Keypair.fromSecretKey(new Uint8Array(secret));
-const NFT_METADATA = 'https://arweave.net/p5-KcvElq76IHyHukVcKGo_y1vM5C7asQowUhfn_0Xs'; 
+const NFT_METADATA = 'https://arweave.net/bPd0YFzZXiH6SgXuAqLIpV0vnPbn0PA8rJ1169nnZ8M'; 
 const TREASURY = "GSSZFXo6SmU5ENTjMbxu2nZMcP24vjfo96VfiRSC1Z8w";
 let COLLECTION_NFT_MINT = ''; 
 let CANDY_MACHINE_ID = '';
 const METAPLEX = Metaplex.make(SOLANA_CONNECTION)
     .use(keypairIdentity(WALLET));
+
+
 
 
 async function createCollectionNft() {
@@ -120,13 +122,13 @@ async function main() {
     const candy_machine = await addItems();
 
 
-    // console.table({
-    //     collection_nft: COLLECTION_NFT_MINT,
-    //     candy_machine: CANDY_MACHINE_ID,
-    //     items_available: candy_machine.itemsAvailable.toNumber(),
-    //     items_minted: candy_machine.itemsMinted.toNumber(),
-    //     items_remaining: candy_machine.itemsRemaining.toNumber(),
-    // });
+    console.table({
+        collection_nft: COLLECTION_NFT_MINT,
+        candy_machine: CANDY_MACHINE_ID,
+        items_available: candy_machine.itemsAvailable.toNumber(),
+        items_minted: candy_machine.itemsMinted.toNumber(),
+        items_remaining: candy_machine.itemsRemaining.toNumber(),
+    });
 
 
 

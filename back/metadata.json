@@ -1,0 +1,26 @@
+
+    {
+        "name": "Ticket Vieilles Charrues",
+        "symbol": "VC",
+        "description": "Ticket pour le festival des Vieilles Charrues",
+        "image": "https://arweave.net/p5-KcvElq76IHyHukVcKGo_y1vM5C7asQowUhfn_0Xs",
+        "attributes": [
+          {
+            "trait_type": "Event",
+            "value": "Vieilles Charrues"
+          },
+          {
+            "trait_type": "Type",
+            "value": "Ticket"
+          }
+        ],
+        "properties": {
+          "files": [
+            {
+              "uri": "https://arweave.net/p5-KcvElq76IHyHukVcKGo_y1vM5C7asQowUhfn_0Xs",
+              "type": "image/png"
+            }
+          ],
+          "category": "image"
+        }
+      }

@@ -13,8 +13,7 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 // Store
 import NavElement from 'components/nav-element';
 
-const CANDY_MACHINE_ID = 'BuovNpB1feL7us6sTWgStksd5s723UdLYamevHAvVAQD';
-const COLLECTION_NFT_MINT = '27MwEt1T5M5sSpBErBor4SQKGpfABYeg7HwwL6rDwWRz';
+const COLLECTION_NFT_MINT = '2FutMMcTQQkLcX1UL8WXUDMmrtFPnUprG4MGoeG4Ur76';
 
 export const MyNFTsView: FC = ({ }) => {
   const { wallet } = useWallet();
@@ -23,6 +22,7 @@ export const MyNFTsView: FC = ({ }) => {
 
   const [metaplex, setMetaplex] = useState(null);
   const [myNfts, setMyNfts] = useState<DasApiAsset[]>(null);
+  const [nftImage, setNftImage] = useState<string>(null);
   const carouselRef = useRef(null);
 
 
@@ -32,6 +32,15 @@ export const MyNFTsView: FC = ({ }) => {
       setMetaplex(metaplexInstance);
     }
   }, [wallet, connection])
+
+
+  const fetchJsonContent = async (uri) => {
+    const response = await fetch(uri);
+    if (!response.ok) {
+      throw new Error('Failed to fetch JSON content');
+    }
+    return await response.json();
+  };
 
   useEffect(() => {
     const fetchCandyMachine = async () => {
@@ -49,6 +58,8 @@ export const MyNFTsView: FC = ({ }) => {
         
         setMyNfts(filteredAssets)
         console.log(filteredAssets)
+        const jsonContent = await fetchJsonContent(filteredAssets[0].content.json_uri);
+        setNftImage(jsonContent.image)
       } catch (error) {
         console.error("Failed to fetch candy machine", error);
       }
@@ -95,7 +106,7 @@ export const MyNFTsView: FC = ({ }) => {
                 {myNfts.map((nft) => (
                   <div key={nft.id} className="asset-card flex-shrink-0 w-1/4" style={{ backgroundColor: '#1a202c' }}>
                     <div className="asset-name">NOM : {nft.content.metadata.name}</div>
-                    <img src={nft.content.json_uri} width={"100px"} alt="Logo" />
+                    <img src={nftImage} width={"100px"} alt="Logo" />
                     <div className="asset-id">ID : {truncate(nft.id, 20)}</div>
                   </div>
                 ))}
