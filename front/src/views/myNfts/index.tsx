@@ -16,7 +16,7 @@ import NavElement from 'components/nav-element';
 const COLLECTION_NFT_MINT = '2FutMMcTQQkLcX1UL8WXUDMmrtFPnUprG4MGoeG4Ur76';
 
 export const MyNFTsView: FC = ({ }) => {
-  const { wallet } = useWallet();
+  const { wallet} = useWallet();
   const { connection } = useConnection();
   const [isNavOpen, setIsNavOpen] = useState(false);
 
@@ -30,8 +30,9 @@ export const MyNFTsView: FC = ({ }) => {
     if (wallet && wallet.adapter) {
       const metaplexInstance = Metaplex.make(connection).use(walletAdapterIdentity(wallet.adapter));
       setMetaplex(metaplexInstance);
+      console.log("Metaplex")
     }
-  }, [wallet, connection])
+  }, [wallet, connection,wallet?.adapter?.publicKey])
 
 
   const fetchJsonContent = async (uri) => {
@@ -42,31 +43,34 @@ export const MyNFTsView: FC = ({ }) => {
     return await response.json();
   };
 
+  const fetchCandyMachine = async () => {
+    if (!metaplex || !wallet || !wallet.adapter || !wallet.adapter.publicKey) return;
+    try {
+      const umi = createUmi('https://api.devnet.solana.com').use(dasApi());
+      const owner = publicKey(wallet.adapter.publicKey);
+
+      const assets: DasApiAssetList = await umi.rpc.getAssetsByOwner({
+        owner,
+        limit: 10
+      });
+      
+      const filteredAssets = assets.items.filter(asset => asset.grouping[0].group_value === COLLECTION_NFT_MINT);
+      
+      setMyNfts(filteredAssets)
+      console.log("Fetch NFT")
+      const jsonContent = await fetchJsonContent(filteredAssets[0].content.json_uri);
+      setNftImage(jsonContent.image)
+    } catch (error) {
+      console.error("Failed to fetch candy machine", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchCandyMachine = async () => {
-      if (!metaplex || !wallet || !wallet.adapter || !wallet.adapter.publicKey) return;
-      try {
-        const umi = createUmi('https://api.devnet.solana.com').use(dasApi());
-        const owner = publicKey(wallet.adapter.publicKey);
-
-        const assets: DasApiAssetList = await umi.rpc.getAssetsByOwner({
-          owner,
-          limit: 10
-        });
-        
-        const filteredAssets = assets.items.filter(asset => asset.grouping[0].group_value === COLLECTION_NFT_MINT);
-        
-        setMyNfts(filteredAssets)
-        console.log(filteredAssets)
-        const jsonContent = await fetchJsonContent(filteredAssets[0].content.json_uri);
-        setNftImage(jsonContent.image)
-      } catch (error) {
-        console.error("Failed to fetch candy machine", error);
-      }
-    };
-
     fetchCandyMachine();
-  }, [metaplex,connection]);
+  }, [metaplex,wallet,connection,wallet?.adapter?.publicKey]);
+
+
+
 
   const truncate = (str, n) => {
     if (str.length <= n) return str;
