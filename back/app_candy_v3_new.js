@@ -90,7 +90,7 @@ async function addItems() {
         .candyMachines()
         .findByAddress({ address: new PublicKey(CANDY_MACHINE_ID) }); 
     const items = [];
-    for (let i = 0; i < 10; i++ ) { // Add 20 NFTs (batch of 20, maximum supply 20)
+    for (let i = 0; i < 10; i++ ) { // Add 10 NFTs (batch of 10, maximum supply 10)
         items.push({
             name: `Tickets # ${i+1}`,
             uri: NFT_METADATA

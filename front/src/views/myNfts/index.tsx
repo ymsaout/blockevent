@@ -13,7 +13,7 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 // Store
 import NavElement from 'components/nav-element';
 
-const COLLECTION_NFT_MINT = '2FutMMcTQQkLcX1UL8WXUDMmrtFPnUprG4MGoeG4Ur76';
+const COLLECTION_NFT_MINT = '7gQ7jvBRgAYoYywCSyd8Vp1oufTbu9amvEVZc1Aph7XW';
 
 export const MyNFTsView: FC = ({ }) => {
   const { wallet} = useWallet();
