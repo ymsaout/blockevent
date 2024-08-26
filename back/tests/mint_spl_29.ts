@@ -11,7 +11,7 @@ import { TokenMinter } from "../target/types/token_minter";
 import { assert, expect } from "chai";
 
 
-describe("bid auction", () => {
+describe("testing our mint_spl_29 program", () => {
   // Configure the client to use the local cluster.
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
@@ -27,6 +27,7 @@ describe("bid auction", () => {
   console.log("treasury", treasury.publicKey.toBase58());
   console.log("highestBidder", highestBidder.publicKey.toBase58());
   console.log("lowestBidder", lowestBidder.publicKey.toBase58());
+  console.log("program", program.programId.toBase58());
 
 
   const METADATA_SEED = "metadata";
@@ -88,7 +89,6 @@ describe("bid auction", () => {
     await provider.connection.confirmTransaction(txHash, 'finalized');
     const newInfo = await provider.connection.getAccountInfo(metadataAddress);
     assert(newInfo, "  Mint should be initialized.");
-    console.log("Mint initialized");
   });
 
   it("it should mint a token correctly", async () => {
@@ -136,7 +136,6 @@ describe("bid auction", () => {
       "Post balance should equal initial plus mint amount"
     );
 
-    console.log("Tokens minted on the payer ATA");
   });
 
   it("it should start the auction correctly", async () => {
@@ -486,171 +485,3 @@ describe("bid auction", () => {
 
 });
 
-
-
-
-describe("no initialization", () => {
-  // Configure the client to use the local cluster.
-  const provider = anchor.AnchorProvider.env();
-  anchor.setProvider(provider);
-
-  //common setup for all tests
-  const program = anchor.workspace.TokenMinter as Program<TokenMinter>;
-  const payer = Keypair.generate();
-  const treasury = Keypair.generate();
-  const highestBidder = Keypair.generate();
-  const lowestBidder = Keypair.generate();
-  const otherBidder = Keypair.generate();
-
-  console.log("payer", payer.publicKey.toBase58());
-  console.log("treasury", treasury.publicKey.toBase58());
-  console.log("highestBidder", highestBidder.publicKey.toBase58());
-  console.log("lowestBidder", lowestBidder.publicKey.toBase58());
-  console.log("otherBidder", otherBidder.publicKey.toBase58());
-
-
-  const METADATA_SEED = "metadata";
-  const TOKEN_METADATA_PROGRAM_ID = new anchor.web3.PublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s");
-
-  const MINT_SEED = "mint"
-  const metadata = {
-    name : "Vieilles Charrues_SPL",
-    symbol : "VC",
-    uri : "https://arweave.net/bPd0YFzZXiH6SgXuAqLIpV0vnPbn0PA8rJ1169nnZ8M",
-    decimals : 0,
-  }
-
-  const mintAmount = 1;
-  const [mint] = anchor.web3.PublicKey.findProgramAddressSync(
-    [Buffer.from(MINT_SEED)],
-    program.programId
-  )
-
-
-  const [metadataAddress] = anchor.web3.PublicKey.findProgramAddressSync(
-    [
-      Buffer.from(METADATA_SEED),
-      TOKEN_METADATA_PROGRAM_ID.toBuffer(),
-      mint.toBuffer(),
-    ],
-    TOKEN_METADATA_PROGRAM_ID
-  );
-
-
-  it("it should initialize the spl token for the bid auction", async () => {
-    // Add your test here.
-    const airdropSignature = await provider.connection.requestAirdrop(
-      payer.publicKey,
-      15 * anchor.web3.LAMPORTS_PER_SOL // Airdrop 15 SOL
-    );
-    await provider.connection.confirmTransaction(airdropSignature);
-    const info = await program.provider.connection.getAccountInfo(mint);
-    if (info) {
-      return; // skip if already initialized
-    }
-    console.log("Mint not created, Attempting to initialize");
-
-    const context = {
-      metadata : metadataAddress,
-      mint,
-      payer : payer.publicKey,
-      rent : anchor.web3.SYSVAR_RENT_PUBKEY,
-      systemProgram : anchor.web3.SystemProgram.programId,
-      tokenProgram : TOKEN_PROGRAM_ID,
-      tokenMetadataProgram : TOKEN_METADATA_PROGRAM_ID,
-    };
-
-    const txHash = await program.methods
-    .initToken(metadata)
-    .accounts(context)
-    .signers([payer])
-    .rpc();
-    await provider.connection.confirmTransaction(txHash, 'finalized');
-    const newInfo = await provider.connection.getAccountInfo(metadataAddress);
-    assert(newInfo, "  Mint should be initialized.");
-    console.log("Mint initialized");
-  });
-
-  it("it should mint a token correctly", async () => {
-
-    const destination = await anchor.utils.token.associatedAddress({
-      mint: mint,
-      owner: payer.publicKey,
-    });
-
-    let initialBalance: number;
-
-    try {
-      const balance = (await provider.connection.getTokenAccountBalance(destination))
-      initialBalance = balance.value.uiAmount;
-    } catch {
-      // Token account not yet initiated has 0 balance
-      initialBalance = 0;
-    } 
-    
-    const context = {
-      mint,
-      destination,
-      payer: payer.publicKey,
-      rent: anchor.web3.SYSVAR_RENT_PUBKEY,
-      systemProgram: anchor.web3.SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      associatedTokenProgram: anchor.utils.token.ASSOCIATED_PROGRAM_ID,
-    };
-
-    const txHash = await program.methods
-      .mintTokens(new BN(mintAmount * 1 ** metadata.decimals))
-      .accounts(context)
-      .signers([payer])
-      .rpc();
-    await provider.connection.confirmTransaction(txHash);
-
-
-    const postBalance = (
-      await provider.connection.getTokenAccountBalance(destination)
-    ).value.uiAmount;
-
-    assert.equal(
-      initialBalance + mintAmount,
-      postBalance,
-      "Post balance should equal initial plus mint amount"
-    );
-
-    console.log("Tokens minted on the payer ATA");
-  });
-
-
-
-  // it("it should fail to place a bid because the auction is not initialized", async () => {
-    
-  //   const airdropSignature = await provider.connection.requestAirdrop(
-  //     highestBidder.publicKey,
-  //     15 * anchor.web3.LAMPORTS_PER_SOL // Airdrop 15 SOL
-  //   );
-  //   await provider.connection.confirmTransaction(airdropSignature);
-
-  //   const [auction, bump] = await PublicKey.findProgramAddress(
-  //     [Buffer.from("auction"), mint.toBuffer()],
-  //     program.programId
-  //   );
-
-
-  //   const bidAmount = 200000; //lamports
-
-  //   try {
-  //   await program.methods
-  //   .placeBid(new BN(bidAmount))
-  //   .accounts({
-  //     auction : auction,
-  //     bidder : highestBidder.publicKey,
-  //   })
-  //   .signers([highestBidder])
-  //   .rpc()
-  //   } catch (error) {
-  //     console.log("error", error);
-  //   }
-
-
-//});
-
-});
