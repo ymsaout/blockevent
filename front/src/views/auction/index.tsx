@@ -9,7 +9,7 @@ import * as anchor from "@coral-xyz/anchor";
 import { 
     TOKEN_PROGRAM_ID,
   } from "@solana/spl-token";
-
+import Image from 'next/image';
 
 
 
@@ -27,12 +27,14 @@ export const AuctionView: FC = () => {
     const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
 
 
+
     const MINT_SEED = "mint"
     const METADATA_SEED = "metadata";
     const TREASURY = new PublicKey("ByBtW8mRt6tgr7G134GfjWvQPPaJPKxmdHAzQCUn93ow");
 
 
 
+    const isWalletConnected = publicKey !== null && publicKey !== undefined;
 
     const getRecentBlockhash = async (): Promise<string | null> => {
         try {
@@ -76,6 +78,7 @@ export const AuctionView: FC = () => {
         }
     };
 
+
     useEffect(() => {
         // Fetch auction info initially
         fetchAuctionInfo();
@@ -85,6 +88,7 @@ export const AuctionView: FC = () => {
 
         // return () => clearInterval(interval); // Clean up interval on component unmount
     }, []);
+
 
     useEffect(() => {
         if (timeRemaining !== null) {
@@ -365,8 +369,12 @@ const setBid = async () => {
             program.programId
         );
 
+        console.log("bidAmount", bidAmount) // SOL
+        const bidAmountInLamports = bidAmount * 1000000000;
+        console.log("bidAmountInLamports", bidAmountInLamports) // Lamports
+
        const tx =  await program.methods
-        .placeBid(new BN(bidAmount))
+        .placeBid(new BN(bidAmountInLamports))
         .accounts({
           auction : auction,
           bidder : wallet.adapter.publicKey,
@@ -517,6 +525,7 @@ const claimNft = async () => {
 
 
   return (
+    <>
     <div>
       <button onClick={initToken} disabled={loadingInit}>
         {loadingInit ? "Initializing..." : "Initialize Token"}
@@ -557,6 +566,65 @@ const claimNft = async () => {
       </button>
 
     </div>
+
+    <div className="bg-gray-900 text-white p-6 rounded-lg mx-auto max-w-2xl">
+      <Image
+      src="/VC_DEDICACE.png"
+      alt="solana icon"
+      width={1000}
+      height={1000}
+      />        
+      <div className="flex flex-col md:flex-row items-start">
+        <div className="md:w-1/2 p-4">
+          <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-fuchsia-500 mb-4 animate-fade-in">Affiche dédicacée Vieilles Charrues </h1>
+          <p className="text-sm text-gray-400 mb-4">
+          Laissez-vous envoûter par l'essence même de l'art et de la musique avec cette affiche dédicacée par les légendaires artistes des Vieilles Charrues tels que Justice ou PNL.          </p>
+          <p className="text-sm text-gray-400 mb-4">
+          Accrochez cette pièce iconique chez vous et laissez-la vous transporter vers des souvenirs inoubliables.          </p>
+          <p className="text-sm text-gray-400 mb-4">
+          C'est bien plus qu'une affiche, c'est une pièce de collection chargée d'émotions et de souvenirs qui illuminera votre espace de sa beauté singulière et de son aura légendaire.          </p>
+          <p className="text-sm text-gray-400 mb-4">
+            Il ne vous reste plus qu'à enchérir pour la récupérer !
+          </p>
+        </div>
+        <div className="md:w-1/2 p-4 flex justify-center items-center">
+          <div className="bg-gray-800 rounded-lg shadow-lg p-6">
+            <p className="text-sm text-gray-400 mb-4">Place une enchère pour tenter de l'emporter !</p>
+            {auctionInfo && (
+              <div>
+                <div className="text-lg mb-2">Temps restant : {Math.floor(timeRemaining / 60)} mn {timeRemaining % 60} s</div>
+                <div className="text-lg mb-2">Enchère actuelle: {auctionInfo.highestBid/1000000000} SOL</div>
+              </div>
+            )}
+            
+            <button
+              className="group w-60 m-2 btn bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:from-white hover:to-purple-300 text-black" 
+              onClick={startAuction} disabled={loadingAuction|| !isWalletConnected}
+            >
+              {loadingAuction ? "Starting Auction..." : "Démarrer la vente"}
+            </button>
+            <div className="flex items-center justify-center">
+                <input 
+                    type="number" 
+                    value={bidAmount} 
+                    onChange={(e) => setBidAmount(Number(e.target.value))}
+                    placeholder="Montant en SOL"
+                    className="border rounded p-2 mr-2" // Ajout de styles pour le champ
+                    style={{ color: 'black', width: '100px' }} // Largeur fixe pour le champ
+                    />
+                <button 
+                    onClick={setBid} 
+                    disabled={loadingBid || bidAmount <= 0} // Désactiver si le montant est <= 0
+                    className="group w-30 m-2 btn bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:from-white hover:to-purple-300 text-black" 
+                >
+                    {loadingBid ? "Bidding..." : "Enchérir"}
+                </button>
+</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </>
   );
 
 }
