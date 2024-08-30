@@ -295,7 +295,7 @@ export const AuctionView: FC = () => {
             [Buffer.from("auction"), mint.toBuffer()],
             program.programId
         );
-        const duration = 604800 ; // 604800 seconds = one week
+        const duration = 120 ; // 604800 seconds = one week
     
         const tx = await program.methods
             .startAuction(new anchor.BN(duration))
@@ -400,7 +400,8 @@ const setBid = async () => {
             if (logs) {
                 const customError = logs.find(log => log.includes('Error Code:'));
                 if (customError) {
-                    notify({ type: 'error', message: `Error bidding: ${customError}` });
+                    const errorMessage = customError.split('Error Message: ')[1];
+                    notify({ type: 'error', message: `Error bidding: ${errorMessage}` });
                 } else {
                     notify({ type: 'error', message: `An unknown error occurred.` });
                 }
@@ -434,32 +435,31 @@ const claimNft = async () => {
             connection: connection.connection,
         });
 
+
         const [mint] = anchor.web3.PublicKey.findProgramAddressSync(
             [Buffer.from(MINT_SEED)],
             program.programId
         );
 
-        console.log("mint", mint.toBase58())
 
         const [auction, bump] = await PublicKey.findProgramAddress(
             [Buffer.from("auction"), mint.toBuffer()],
             program.programId
+            
         );
 
-        console.log("auction", auction.toBase58())
 
-        const auctionAccount = await program.account.auction.fetch(auction) as {
-            highestBidder: PublicKey;
-        };
+        const BidderTokenAccount = await anchor.utils.token.associatedAddress({
+            mint: mint,
+            owner: wallet.adapter.publicKey,
+          });
 
-        console.log("Highest Bidder", auctionAccount.highestBidder.toBase58())
-
-
+      
         const tx = await program.methods
         .claimNft()
         .accounts({
           auction : auction,
-          highestBidderTokenAccount : auctionAccount.highestBidder,
+          highestBidderTokenAccount : BidderTokenAccount,
           claimant : wallet.adapter.publicKey,
           treasury : TREASURY,
           mint : mint,
@@ -489,8 +489,23 @@ const claimNft = async () => {
         console.log("txHash", txHash)
 
     } catch (error) {
-        console.error("Error claiming NFT:", error);
-    } finally {
+        if (error instanceof SendTransactionError) {
+            const logs = error.logs;
+            if (logs) {
+                const customError = logs.find(log => log.includes('Error Code:'));
+                if (customError) {
+                    const errorMessage = customError.split('Error Message: ')[1];
+                    notify({ type: 'error', message: `Error claiming NFT: ${errorMessage}` });
+                } else {
+                    notify({ type: 'error', message: `An unknown error occurred.` });
+                }
+            } else {
+                notify({ type: 'error', message: `An unknown error occurred.` });
+            }
+        } else {
+            notify({ type: 'error', message: `An unknown error occurred.` });
+        }
+        console.error("Error placing bid:", error);    } finally {
         setLoadingClaim(false);
     }
 
