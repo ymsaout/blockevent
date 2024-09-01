@@ -13,6 +13,7 @@ import Image from 'next/image';
 
 
 
+
 export const AuctionView: FC = () => {
     const programID = new PublicKey("5wrfmBvkFaayrm8XYgXTvway4Rxt6ZBedt7sB4Z36A9c");
     const connection = useConnection();
@@ -28,7 +29,7 @@ export const AuctionView: FC = () => {
 
 
 
-    const MINT_SEED = "mint"
+    const MINT_SEED = "mint_2"
     const METADATA_SEED = "metadata";
     const TREASURY = new PublicKey("ByBtW8mRt6tgr7G134GfjWvQPPaJPKxmdHAzQCUn93ow");
 
@@ -130,8 +131,8 @@ export const AuctionView: FC = () => {
 
         const metadata = {
             name : "Vieilles Charrues_SPL",
-            symbol : "VC",
-            uri : "https://arweave.net/bPd0YFzZXiH6SgXuAqLIpV0vnPbn0PA8rJ1169nnZ8M",
+            symbol : "AVC",
+            uri : "https://arweave.net/bYwp1HxhVR-xxU2L-AoO17wBzqATkpLZQEL4AUjE7AI",
             decimals : 0,
           }
         
@@ -140,6 +141,7 @@ export const AuctionView: FC = () => {
             program.programId
           )
 
+        console.log("mint", mint.toString()); // Afficher la clé publique sous forme de chaîne
 
 
         const TOKEN_METADATA_PROGRAM_ID = new PublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s");
@@ -614,12 +616,18 @@ const claimNft = async () => {
                     />
                 <button 
                     onClick={setBid} 
-                    disabled={loadingBid || bidAmount <= 0} // Désactiver si le montant est <= 0
+                    disabled={loadingBid || bidAmount <= 0 || timeRemaining <= 0 || !isWalletConnected} // Désactiver si le montant est <= 0
                     className="group w-30 m-2 btn bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:from-white hover:to-purple-300 text-black" 
                 >
                     {loadingBid ? "Bidding..." : "Enchérir"}
                 </button>
-</div>
+            </div>
+            <button
+              className="group w-60 m-2 btn bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:from-white hover:to-purple-300 text-black" 
+              onClick={claimNft} disabled={loadingClaim|| !isWalletConnected || timeRemaining > 0}
+            >
+              {loadingClaim ? "Claiming" : "Remporter l'affiche !"}
+            </button>
           </div>
         </div>
       </div>

@@ -19,7 +19,7 @@ mod token_minter {
     use super::*;
 
     pub fn init_token(ctx: Context<InitToken>, metadata: InitTokenParams) -> Result<()> {
-        let seeds = &["mint".as_bytes(),&[ctx.bumps.mint]];
+        let seeds = &["mint_2".as_bytes(),&[ctx.bumps.mint]];
         let signer = [&seeds[..]];
 
         let token_data : DataV2 = DataV2 {
@@ -60,7 +60,7 @@ mod token_minter {
 
     pub fn mint_tokens(ctx: Context<MintTokens>, quantity: u64) -> Result<()> {
         msg!("Minting tokens: {:?}", quantity);
-        let seeds = &["mint".as_bytes(),&[ctx.bumps.mint]];
+        let seeds = &["mint_2".as_bytes(),&[ctx.bumps.mint]];
         let signer = [&seeds[..]];
 
         mint_to(
@@ -130,7 +130,7 @@ mod token_minter {
             ],
         )?;
 
-        let seeds = &["mint".as_bytes(), &[ctx.bumps.mint]];
+        let seeds = &["mint_2".as_bytes(), &[ctx.bumps.mint]];
         let signer = [&seeds[..]];
     
         mint_to(
@@ -163,7 +163,7 @@ pub struct InitToken<'info> {
     pub metadata : UncheckedAccount<'info>,
     #[account(
         init,
-        seeds = [b"mint"],
+        seeds = [b"mint_2"],
         bump,
         payer = payer,
         mint::decimals = params.decimals,
@@ -185,7 +185,7 @@ pub struct InitToken<'info> {
 pub struct MintTokens<'info> {
     #[account(
         mut,
-        seeds = [b"mint"],
+        seeds = [b"mint_2"],
         bump,
         mint::authority = mint,
     )]
@@ -254,7 +254,7 @@ pub struct ClaimNft<'info> {
     pub treasury: AccountInfo<'info>, //treasury account 
     #[account(
         mut,
-        seeds = [b"mint"],
+        seeds = [b"mint_2"],
         bump,
         mint::authority = mint,
     )]
