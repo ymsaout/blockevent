@@ -33,6 +33,7 @@
     "next-transpile-modules": "^10.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-modal": "^3.16.1",
     "zustand": "^3.6.9"
   },
   "devDependencies": {

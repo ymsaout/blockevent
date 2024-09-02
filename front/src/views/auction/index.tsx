@@ -10,6 +10,7 @@ import {
     TOKEN_PROGRAM_ID,
   } from "@solana/spl-token";
 import Image from 'next/image';
+import Modal from 'react-modal';
 
 
 
@@ -92,6 +93,7 @@ export const AuctionView: FC = () => {
 
         // return () => clearInterval(interval); // Clean up interval on component unmount
     }, []);
+
 
 
     useEffect(() => {
@@ -334,6 +336,7 @@ export const AuctionView: FC = () => {
         await connection.connection.confirmTransaction(txHash, 'finalized');
 
         console.log("txHash", txHash)
+
         fetchAuctionInfo();
     
     } catch (error) {
@@ -537,54 +540,32 @@ const claimNft = async () => {
 
   return (
     <>
-    {/* <div>
-      <button onClick={initToken} disabled={loadingInit}>
-        {loadingInit ? "Initializing..." : "Initialize Token"}
-      </button>
-      <br/>
-      <button onClick={mintToken} disabled={loadingMint}>
-        {loadingMint ? "Minting..." : "Mint Token"}
-      </button>
-      <br/>
-      <button onClick={startAuction} disabled={loadingAuction}>
-        {loadingAuction ? "Starting Auction..." : "Start Auction"}
-      </button>
-      <br/>
-        <button onClick={setBid} disabled={loadingBid}>
-        {loadingBid ? "Bidding..." : "Bid"}
-      </button>
-      <input 
-      type="number" 
-      value={bidAmount} 
-      onChange={(e) => setBidAmount(Number(e.target.value))}
-      style={{ color: 'black' }}
-      />
-      <br/>
-      <br/>
-      {auctionInfo && (
-        <div>
-            <p> <strong>Auction Info</strong></p>
-            <p>Token Mint: {auctionInfo.tokenMint.toBase58()}</p>
-            <p>Highest Bid: {auctionInfo.highestBid.toString()}</p>
-            <p>Highest Bidder: {auctionInfo.highestBidder.toBase58()}</p>
-            <p>Time Remaining: {timeRemaining} seconds</p>
-        </div>
-      )}
-      <br/>
-      <br/>
-      <button onClick={claimNft} disabled={loadingClaim}>
-        {loadingClaim ? "Claiming..." : "Claim NFT"}
-      </button>
-
-    </div> */}
-
     <div className="bg-gray-900 text-white p-6 rounded-lg mx-auto max-w-2xl">
       <Image
       src="/VC_DEDICACE.png"
       alt="solana icon"
       width={1000}
       height={1000}
-      />        
+      />
+    {claimed && (
+        <Modal
+            isOpen={claimed} // Assurez-vous que la modal est contrôlée par l'état
+            onRequestClose={() => setClaimed(false)} // Fonction pour fermer la modal
+            className="flex items-center justify-center h-full"
+            overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" // Fond semi-transparent et centrage
+        >
+            <div className="bg-white rounded-lg p-6 max-w-md mx-auto">
+                <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-fuchsia-500 mb-4 animate-fade-in">Affiche remportée 🎉</h1> {/* Titre en violet */}
+                <p className="text-gray-700 mb-4">Vous avez gagnée l'affiche dédicacée des Vieilles Charrues, bravo 💪</p>
+                <button
+                    onClick={() => setClaimed(false)} // Ferme la modal
+                    className="group w-60 m-2 btn bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:from-white hover:to-purple-300 text-black"
+                >
+                    Fermer
+                </button>
+            </div>
+        </Modal>
+    )}
       <div className="flex flex-col md:flex-row items-start">
         <div className="md:w-1/2 p-4">
           <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-fuchsia-500 mb-4 animate-fade-in">Affiche dédicacée Vieilles Charrues </h1>
@@ -647,9 +628,9 @@ const claimNft = async () => {
         <div className="p-4">
             <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-fuchsia-500 mb-4 animate-fade-in">Historique des enchères</h2>
             <ul className="list-disc list-inside text-sm text-gray-400 mb-4">
-                {bidHistory.map((bid, index) => (
+                {bidHistory.slice().reverse().map((bid, index) => ( // Inverser le tableau
                     <li key={index}>
-                        {bid.bidder} - {bid.amount/1000000000} SOL
+                        {bid.bidder} - {bid.amount / 1000000000} SOL
                     </li>
                 ))}
             </ul>
