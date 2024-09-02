@@ -26,7 +26,8 @@ export const AuctionView: FC = () => {
     const [auctionInfo, setAuctionInfo] = useState<any>(null);
     const [bidAmount, setBidAmount] = useState<number>(0);
     const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
-    const [auctionStatus, setAuctionStatus] = useState<string | null>(null);
+    const [bidHistory, setBidHistory] = useState<any[]>([]);
+    const [claimed, setClaimed] = useState<boolean>(false);
 
 
 
@@ -404,6 +405,11 @@ const setBid = async () => {
 
         console.log("txHash", txHash)
 
+        setBidHistory((prevHistory) => [
+            ...prevHistory,
+            { bidder: wallet.adapter.publicKey.toBase58(), amount: bidAmountInLamports },
+        ]);
+
         fetchAuctionInfo();
 
     } catch (error) {
@@ -499,6 +505,7 @@ const claimNft = async () => {
         await connection.connection.confirmTransaction(txHash, 'finalized');
 
         console.log("txHash", txHash)
+        setClaimed(true);
 
     } catch (error) {
         if (error instanceof SendTransactionError) {
@@ -630,13 +637,23 @@ const claimNft = async () => {
             </div>
             <button
               className="group w-60 m-2 btn bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:from-white hover:to-purple-300 text-black" 
-              onClick={claimNft} disabled={loadingClaim|| !isWalletConnected || timeRemaining > 0}
+              onClick={claimNft} disabled={loadingClaim|| !isWalletConnected || timeRemaining > 0 || claimed}
             >
               {loadingClaim ? "Claiming" : "Remporter l'affiche !"}
             </button>
           </div>
         </div>
       </div>
+        <div className="p-4">
+            <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-fuchsia-500 mb-4 animate-fade-in">Historique des enchères</h2>
+            <ul className="list-disc list-inside text-sm text-gray-400 mb-4">
+                {bidHistory.map((bid, index) => (
+                    <li key={index}>
+                        {bid.bidder} - {bid.amount/1000000000} SOL
+                    </li>
+                ))}
+            </ul>
+        </div>
     </div>
     </>
   );
