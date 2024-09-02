@@ -26,6 +26,8 @@ export const AuctionView: FC = () => {
     const [auctionInfo, setAuctionInfo] = useState<any>(null);
     const [bidAmount, setBidAmount] = useState<number>(0);
     const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
+    const [auctionStatus, setAuctionStatus] = useState<string | null>(null);
+
 
 
 
@@ -66,7 +68,7 @@ export const AuctionView: FC = () => {
             console.log("auctionAccount.tokenMint", auctionAccount.tokenMint);
             console.log("auctionAccount.highestBid", auctionAccount.highestBid);
             console.log("auctionAccount.highestBidder", auctionAccount.highestBidder);
-
+            
             // Update state with auction info
             setAuctionInfo(auctionAccount);
             const currentTime = Math.floor(Date.now() / 1000);
@@ -528,7 +530,7 @@ const claimNft = async () => {
 
   return (
     <>
-    <div>
+    {/* <div>
       <button onClick={initToken} disabled={loadingInit}>
         {loadingInit ? "Initializing..." : "Initialize Token"}
       </button>
@@ -567,7 +569,7 @@ const claimNft = async () => {
         {loadingClaim ? "Claiming..." : "Claim NFT"}
       </button>
 
-    </div>
+    </div> */}
 
     <div className="bg-gray-900 text-white p-6 rounded-lg mx-auto max-w-2xl">
       <Image
@@ -594,8 +596,12 @@ const claimNft = async () => {
             <p className="text-sm text-gray-400 mb-4">Place une enchère pour tenter de l'emporter !</p>
             {auctionInfo && (
               <div>
-                <div className="text-lg mb-2">Temps restant : {Math.floor(timeRemaining / 60)} mn {timeRemaining % 60} s</div>
-                <div className="text-lg mb-2">Enchère actuelle: {auctionInfo.highestBid/1000000000} SOL</div>
+                <div className="text-lg mb-2">Temps restant : 
+                    {timeRemaining > 0 ? ` ${Math.floor(timeRemaining / 60)} mn ${timeRemaining % 60} s` : <strong> Terminé</strong>} </div>
+                <div className="text-lg mb-2">Enchère actuelle : {auctionInfo.highestBid/1000000000} SOL</div>
+                <div className="text-lg mb-2">Gagnant actuel :   
+                    <br></br>
+                {auctionInfo.highestBidder.toBase58() == "11111111111111111111111111111111" ? " En attente d'une enchère" : `${auctionInfo.highestBidder.toBase58().slice(0, 6)}...${auctionInfo.highestBidder.toBase58().slice(-4)}`}                </div>
               </div>
             )}
             
