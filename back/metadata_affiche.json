@@ -1,0 +1,25 @@
+{
+    "name": "Affiche dédicacée Vieilles Charrues",
+    "symbol": "AVC",
+    "description": "Affiche du festival des Vieilles Charrues dédicacée par les artistes ",
+    "image": "https://arweave.net/Lyd-3LrBkLEFPq0AtvcNnB-cBtiMKVpEFu9aNEXFcjE",
+    "attributes": [
+      {
+        "trait_type": "Event",
+        "value": "Vieilles Charrues"
+      },
+      {
+        "trait_type": "Type",
+        "value": "Affiche"
+      }
+    ],
+    "properties": {
+      "files": [
+        {
+          "uri": "https://arweave.net/Lyd-3LrBkLEFPq0AtvcNnB-cBtiMKVpEFu9aNEXFcjE",
+          "type": "image/png"
+        }
+      ],
+      "category": "image"
+    }
+  }
