@@ -1,4 +1,4 @@
-FROM node:22.4.1
+FROM node:20.16.0
 WORKDIR /app
 ENV NODE_ENV production
 COPY package*.json ./
