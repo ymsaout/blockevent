@@ -33,7 +33,7 @@ describe("testing our mint_spl_29 program", () => {
   const METADATA_SEED = "metadata";
   const TOKEN_METADATA_PROGRAM_ID = new anchor.web3.PublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s");
 
-  const MINT_SEED = "mint"
+  const MINT_SEED = "mint_2"
   const metadata = {
     name : "Vieilles Charrues_SPL",
     symbol : "VC",
@@ -144,7 +144,7 @@ describe("testing our mint_spl_29 program", () => {
       program.programId
     );
     const duration = 5 ; // seconds
-
+    
     const txHash = await program.methods
       .startAuction(new anchor.BN(duration))
       .accounts({

@@ -11,6 +11,8 @@ import {
   } from "@solana/spl-token";
 import Image from 'next/image';
 import Modal from 'react-modal';
+import Confetti from 'react-confetti'; // Import the Confetti component
+
 
 
 
@@ -29,6 +31,7 @@ export const AuctionView: FC = () => {
     const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
     const [bidHistory, setBidHistory] = useState<any[]>([]);
     const [claimed, setClaimed] = useState<boolean>(false);
+    const [modalOpen, setModalOpen] = useState<boolean>(false);
 
 
 
@@ -509,6 +512,7 @@ const claimNft = async () => {
 
         console.log("txHash", txHash)
         setClaimed(true);
+        setModalOpen(true);
 
     } catch (error) {
         if (error instanceof SendTransactionError) {
@@ -540,6 +544,7 @@ const claimNft = async () => {
 
   return (
     <>
+    {modalOpen && <Confetti/>}
     <div className="bg-gray-900 text-white p-6 rounded-lg mx-auto max-w-2xl">
       <Image
       src="/VC_DEDICACE.png"
@@ -547,18 +552,18 @@ const claimNft = async () => {
       width={1000}
       height={1000}
       />
-    {claimed && (
+    {modalOpen && (
         <Modal
-            isOpen={claimed} // Assurez-vous que la modal est contrôlée par l'état
-            onRequestClose={() => setClaimed(false)} // Fonction pour fermer la modal
+            isOpen={modalOpen} // Assurez-vous que la modal est contrôlée par l'état
+            onRequestClose={() => setModalOpen(false)} // Fonction pour fermer la modal
             className="flex items-center justify-center h-full"
             overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" // Fond semi-transparent et centrage
         >
-            <div className="bg-white rounded-lg p-6 max-w-md mx-auto">
+            <div className="bg-gray-900 rounded-lg p-6 max-w-md mx-auto">
                 <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-fuchsia-500 mb-4 animate-fade-in">Affiche remportée 🎉</h1> {/* Titre en violet */}
-                <p className="text-gray-700 mb-4">Vous avez gagnée l'affiche dédicacée des Vieilles Charrues, bravo 💪</p>
+                <p className="text-xl text-gray-400 mb-4">Vous avez gagné l'affiche dédicacée des Vieilles Charrues, bravo ! 💪</p>
                 <button
-                    onClick={() => setClaimed(false)} // Ferme la modal
+                    onClick={() => setModalOpen(false)} // Ferme la modal
                     className="group w-60 m-2 btn bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:from-white hover:to-purple-300 text-black"
                 >
                     Fermer
@@ -584,6 +589,11 @@ const claimNft = async () => {
             <p className="text-sm text-gray-400 mb-4">Place une enchère pour tenter de l'emporter !</p>
             {auctionInfo && (
               <div>
+                 {timeRemaining > 0 && (
+                            <div className="bg-green-500 text-white p-2 rounded mb-2 text-center">
+                                Enchère en cours
+                            </div>
+                )}
                 <div className="text-lg mb-2">Temps restant : 
                     {timeRemaining > 0 ? ` ${Math.floor(timeRemaining / 60)} mn ${timeRemaining % 60} s` : <strong> Terminé</strong>} </div>
                 <div className="text-lg mb-2">Enchère actuelle : {auctionInfo.highestBid/1000000000} SOL</div>
@@ -595,9 +605,9 @@ const claimNft = async () => {
             
             <button
               className="group w-60 m-2 btn bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:from-white hover:to-purple-300 text-black" 
-              onClick={startAuction} disabled={loadingAuction|| !isWalletConnected}
+              onClick={startAuction} disabled={loadingAuction|| !isWalletConnected || timeRemaining > 0}
             >
-              {loadingAuction ? "Starting Auction..." : "Démarrer la vente"}
+              {loadingAuction ? "En cours..." : "Démarrer la vente"}
             </button>
             <div className="flex items-center justify-center">
                 <input 
@@ -613,14 +623,14 @@ const claimNft = async () => {
                     disabled={loadingBid || bidAmount <= 0 || timeRemaining <= 0 || !isWalletConnected} // Désactiver si le montant est <= 0
                     className="group w-30 m-2 btn bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:from-white hover:to-purple-300 text-black" 
                 >
-                    {loadingBid ? "Bidding..." : "Enchérir"}
+                    {loadingBid ? "En cours..." : "Enchérir"}
                 </button>
             </div>
             <button
               className="group w-60 m-2 btn bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:from-white hover:to-purple-300 text-black" 
               onClick={claimNft} disabled={loadingClaim|| !isWalletConnected || timeRemaining > 0 || claimed}
             >
-              {loadingClaim ? "Claiming" : "Remporter l'affiche !"}
+              {loadingClaim ? "En cours..." : "Remporter l'affiche !"}
             </button>
           </div>
         </div>
