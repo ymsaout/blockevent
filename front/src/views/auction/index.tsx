@@ -30,7 +30,6 @@ export const AuctionView: FC = () => {
     const [bidAmount, setBidAmount] = useState<number>(0);
     const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
     const [bidHistory, setBidHistory] = useState<any[]>([]);
-    const [claimed, setClaimed] = useState<boolean>(false);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
 
 
@@ -309,7 +308,7 @@ export const AuctionView: FC = () => {
             [Buffer.from("auction"), mint.toBuffer()],
             program.programId
         );
-        const duration = 120 ; // 604800 seconds = one week
+        const duration = 30 ; // 604800 seconds = one week
     
         const tx = await program.methods
             .startAuction(new anchor.BN(duration))
@@ -511,7 +510,6 @@ const claimNft = async () => {
         await connection.connection.confirmTransaction(txHash, 'finalized');
 
         console.log("txHash", txHash)
-        setClaimed(true);
         setModalOpen(true);
 
     } catch (error) {
@@ -628,7 +626,7 @@ const claimNft = async () => {
             </div>
             <button
               className="group w-60 m-2 btn bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:from-white hover:to-purple-300 text-black" 
-              onClick={claimNft} disabled={loadingClaim|| !isWalletConnected || timeRemaining > 0 || claimed}
+              onClick={claimNft} disabled={loadingClaim|| !isWalletConnected || timeRemaining > 0}
             >
               {loadingClaim ? "En cours..." : "Remporter l'affiche !"}
             </button>
