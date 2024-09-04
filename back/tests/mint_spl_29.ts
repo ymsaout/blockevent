@@ -87,7 +87,7 @@ describe("testing our mint_spl_29 program", () => {
     .signers([payer])
     .rpc();
     await provider.connection.confirmTransaction(txHash, 'finalized');
-    const newInfo = await provider.connection.getAccountInfo(metadataAddress);
+    const newInfo = await provider.connection.getAccountInfo(mint);
     assert(newInfo, "  Mint should be initialized.");
   });
 
