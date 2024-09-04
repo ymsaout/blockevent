@@ -579,7 +579,7 @@ const claimNft = async () => {
           <p className="text-sm text-gray-400 mb-4">
           C'est bien plus qu'une affiche, c'est une pièce de collection chargée d'émotions et de souvenirs qui illuminera votre espace de sa beauté singulière et de son aura légendaire.          </p>
           <p className="text-sm text-gray-400 mb-4">
-            Il ne vous reste plus qu'à enchérir pour la récupérer !
+            Il ne vous reste plus qu'à enchérir pour la récupérer!
           </p>
         </div>
         <div className="md:w-1/2 p-4 flex justify-center items-center">
