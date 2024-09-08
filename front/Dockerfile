@@ -1,8 +1,8 @@
 FROM node:20.16.0
 WORKDIR /app
 ENV NODE_ENV production
-COPY package*.json ./
+COPY package*.json yarn.lock  ./
 COPY . .
-RUN yarn install --force
+RUN yarn install
 RUN yarn build
 CMD [ "yarn", "start" ]
