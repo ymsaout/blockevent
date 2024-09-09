@@ -3,7 +3,8 @@ import { BN, Idl, Program,AnchorProvider,Provider } from "@coral-xyz/anchor";
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey, clusterApiUrl, SystemProgram, TransactionMessage, VersionedTransaction, SendTransactionError} from '@solana/web3.js';
 import { getProvider, web3 } from '@project-serum/anchor';
-import IDL from '../../../../back/target/idl/token_minter.json'; // Assurez-vous d'avoir le fichier IDL de votre programme
+//import IDL from '../../../../back/target/idl/token_minter.json'; // Assurez-vous d'avoir le fichier IDL de votre programme
+import IDL from '../../../../front/token_minter.json'
 import { notify } from 'utils/notifications';
 import * as anchor from "@coral-xyz/anchor";
 import { 
@@ -308,7 +309,7 @@ export const AuctionView: FC = () => {
             [Buffer.from("auction"), mint.toBuffer()],
             program.programId
         );
-        const duration = 30 ; // 604800 seconds = one week
+        const duration = 120 ; // 604800 seconds = one week
     
         const tx = await program.methods
             .startAuction(new anchor.BN(duration))
