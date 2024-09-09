@@ -4,7 +4,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { Connection, PublicKey, clusterApiUrl, SystemProgram, TransactionMessage, VersionedTransaction, SendTransactionError} from '@solana/web3.js';
 import { getProvider, web3 } from '@project-serum/anchor';
 //import IDL from '../../../../back/target/idl/token_minter.json'; // Assurez-vous d'avoir le fichier IDL de votre programme
-import IDL from '../../../../front/token_minter.json'
+import IDL from '../../../token_minter.json'; // Assurez-vous d'avoir le fichier IDL de votre programme
 import { notify } from 'utils/notifications';
 import * as anchor from "@coral-xyz/anchor";
 import { 
